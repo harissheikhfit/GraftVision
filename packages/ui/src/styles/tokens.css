@@ -1,0 +1,231 @@
+/*
+ * GraftVision proposed light-theme tokens.
+ * Exact values remain subject to design, accessibility, print, device, LED, and clinical review.
+ * Applications consume semantic roles; primitive values stay inside this shared foundation.
+ */
+:root {
+  color-scheme: light;
+
+  /* Primitive colour scales */
+  --gv-primitive-neutral-0: #ffffff;
+  --gv-primitive-neutral-50: #f7f6f2;
+  --gv-primitive-neutral-100: #efeee9;
+  --gv-primitive-neutral-200: #ddddd7;
+  --gv-primitive-neutral-400: #929b9f;
+  --gv-primitive-neutral-600: #56636d;
+  --gv-primitive-neutral-800: #26343f;
+  --gv-primitive-neutral-950: #111a21;
+  --gv-primitive-navy-100: #e7edf2;
+  --gv-primitive-navy-500: #526b80;
+  --gv-primitive-navy-700: #2f485c;
+  --gv-primitive-navy-900: #162a3a;
+  --gv-primitive-clinical-50: #eafafa;
+  --gv-primitive-clinical-200: #a9e2e1;
+  --gv-primitive-clinical-500: #17868a;
+  --gv-primitive-clinical-700: #075e63;
+  --gv-primitive-clinical-900: #123f43;
+  --gv-primitive-emerald-50: #ecfdf3;
+  --gv-primitive-emerald-600: #16854b;
+  --gv-primitive-emerald-800: #14532d;
+  --gv-primitive-amber-50: #fff7d6;
+  --gv-primitive-amber-500: #d58a08;
+  --gv-primitive-amber-800: #713f12;
+  --gv-primitive-red-50: #fff1f2;
+  --gv-primitive-red-600: #c43b45;
+  --gv-primitive-red-800: #8f1d25;
+  --gv-primitive-blue-50: #ecfeff;
+  --gv-primitive-blue-600: #2563eb;
+  --gv-primitive-blue-800: #164e63;
+
+  /* Clinic-owned brand aliases: the complete runtime colour override allowlist */
+  --gv-brand-primary: var(--gv-primitive-clinical-700);
+  --gv-brand-secondary: var(--gv-primitive-navy-700);
+  --gv-brand-link: var(--gv-primitive-clinical-700);
+  --gv-brand-selected-control: var(--gv-primitive-clinical-700);
+
+  /* System-owned foreground and output aliases; clinics cannot override these directly */
+  --gv-brand-on-primary: var(--gv-primitive-neutral-0);
+  --gv-brand-on-secondary: var(--gv-primitive-neutral-0);
+  --gv-brand-report-accent: var(--gv-brand-primary);
+  --gv-brand-presentation-accent: var(--gv-brand-primary);
+
+  /* Semantic colour roles */
+  --gv-color-background: var(--gv-primitive-neutral-50);
+  --gv-color-surface: var(--gv-primitive-neutral-0);
+  --gv-color-surface-elevated: var(--gv-primitive-neutral-0);
+  --gv-color-border: var(--gv-primitive-neutral-200);
+  --gv-color-border-strong: var(--gv-primitive-neutral-600);
+  --gv-color-text-primary: var(--gv-primitive-navy-900);
+  --gv-color-text-secondary: #44525f;
+  --gv-color-text-muted: #5b6872;
+  --gv-color-link: var(--gv-brand-link);
+  --gv-color-focus: #006a70;
+  --gv-color-focus-contrast: var(--gv-primitive-neutral-0);
+  --gv-color-disabled-surface: var(--gv-primitive-neutral-100);
+  --gv-color-disabled-text: var(--gv-primitive-neutral-600);
+  --gv-color-selection: color-mix(
+    in srgb,
+    var(--gv-brand-selected-control) 24%,
+    var(--gv-primitive-neutral-0)
+  );
+  --gv-color-selection-text: var(--gv-primitive-navy-900);
+
+  /* Protected semantic states */
+  --gv-color-success-surface: var(--gv-primitive-emerald-50);
+  --gv-color-success-text: var(--gv-primitive-emerald-800);
+  --gv-color-success-border: var(--gv-primitive-emerald-600);
+  --gv-color-warning-surface: var(--gv-primitive-amber-50);
+  --gv-color-warning-text: var(--gv-primitive-amber-800);
+  --gv-color-warning-border: var(--gv-primitive-amber-500);
+  --gv-color-error-surface: var(--gv-primitive-red-50);
+  --gv-color-error-text: var(--gv-primitive-red-800);
+  --gv-color-error-border: var(--gv-primitive-red-600);
+  --gv-color-information-surface: var(--gv-primitive-blue-50);
+  --gv-color-information-text: var(--gv-primitive-blue-800);
+  --gv-color-information-border: var(--gv-primitive-blue-600);
+  --gv-color-restricted-surface: var(--gv-primitive-navy-100);
+  --gv-color-restricted-text: #293b53;
+  --gv-color-restricted-border: var(--gv-primitive-navy-500);
+  --gv-color-preliminary-surface: var(--gv-primitive-amber-50);
+  --gv-color-preliminary-text: var(--gv-primitive-amber-800);
+  --gv-color-preliminary-border: var(--gv-primitive-amber-500);
+  --gv-color-doctor-approved-surface: var(--gv-primitive-emerald-50);
+  --gv-color-doctor-approved-text: var(--gv-primitive-emerald-800);
+  --gv-color-doctor-approved-border: var(--gv-primitive-emerald-600);
+  --gv-color-ai-assisted-surface: var(--gv-primitive-blue-50);
+  --gv-color-ai-assisted-text: var(--gv-primitive-blue-800);
+  --gv-color-ai-assisted-border: var(--gv-primitive-blue-600);
+  --gv-color-patient-safe-surface: #e6fffb;
+  --gv-color-patient-safe-text: #0f4c5c;
+  --gv-color-patient-safe-border: var(--gv-primitive-clinical-500);
+  --gv-color-internal-surface: var(--gv-primitive-neutral-100);
+  --gv-color-internal-text: var(--gv-primitive-neutral-800);
+  --gv-color-internal-border: var(--gv-primitive-neutral-600);
+
+  /* Anatomical identities are distinct from workflow/status meaning */
+  --gv-region-frontal: #b45309;
+  --gv-region-mid-scalp: #0e7490;
+  --gv-region-crown: #7c3aed;
+  --gv-region-left-temple: #be123c;
+  --gv-region-right-temple: #0369a1;
+  --gv-region-donor-area: #15803d;
+  --gv-region-existing-hair: #475569;
+  --gv-region-proposed-hairline: #c2410c;
+  --gv-region-ai-suggested: #2563eb;
+  --gv-region-doctor-approved: #047857;
+  --gv-region-superseded: #64748b;
+
+  /* Typography */
+  --gv-font-family-sans:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --gv-font-family-mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --gv-font-size-caption: 0.75rem;
+  --gv-font-size-label: 0.875rem;
+  --gv-font-size-body: 1rem;
+  --gv-font-size-card-title: 1.125rem;
+  --gv-font-size-section-title: 1.375rem;
+  --gv-font-size-page-title: clamp(1.75rem, 4vw, 2.5rem);
+  --gv-font-size-display: clamp(2.25rem, 6vw, 4.5rem);
+  --gv-font-size-presentation: clamp(1.25rem, 2.2vw, 2rem);
+  --gv-font-weight-regular: 400;
+  --gv-font-weight-medium: 550;
+  --gv-font-weight-semibold: 650;
+  --gv-font-weight-bold: 750;
+  --gv-line-height-tight: 1.2;
+  --gv-line-height-body: 1.6;
+  --gv-line-height-data: 1.35;
+  --gv-letter-spacing-label: 0.04em;
+
+  /* Spacing */
+  --gv-space-0: 0;
+  --gv-space-1: 0.25rem;
+  --gv-space-2: 0.5rem;
+  --gv-space-3: 0.75rem;
+  --gv-space-4: 1rem;
+  --gv-space-5: 1.5rem;
+  --gv-space-6: 2rem;
+  --gv-space-8: 3rem;
+  --gv-space-10: 4rem;
+
+  /* Radius, borders, shadows, and focus */
+  --gv-radius-none: 0;
+  --gv-radius-small: 0.375rem;
+  --gv-radius-medium: 0.625rem;
+  --gv-radius-large: 1rem;
+  --gv-radius-pill: 999rem;
+  --gv-border-width-default: 1px;
+  --gv-border-width-strong: 2px;
+  --gv-border-default: var(--gv-border-width-default) solid var(--gv-color-border);
+  --gv-border-strong: var(--gv-border-width-strong) solid var(--gv-color-border-strong);
+  --gv-border-focus: var(--gv-border-width-strong) solid var(--gv-color-focus);
+  --gv-border-error: var(--gv-border-width-strong) solid var(--gv-color-error-border);
+  --gv-border-approved: var(--gv-border-width-strong) solid var(--gv-color-doctor-approved-border);
+  --gv-border-restricted: var(--gv-border-width-strong) solid var(--gv-color-restricted-border);
+  --gv-shadow-none: none;
+  --gv-shadow-subtle: 0 1px 2px rgb(17 26 33 / 8%);
+  --gv-shadow-floating: 0 8px 24px rgb(17 26 33 / 12%);
+  --gv-shadow-overlay: 0 18px 48px rgb(17 26 33 / 18%);
+  --gv-focus-width: 3px;
+  --gv-focus-offset: 3px;
+  --gv-focus-outline: var(--gv-focus-width) solid var(--gv-color-focus);
+  --gv-focus-outline-high-contrast: 2px solid CanvasText;
+
+  /* Motion */
+  --gv-motion-duration-fast: 100ms;
+  --gv-motion-duration-standard: 180ms;
+  --gv-motion-duration-slow: 280ms;
+  --gv-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --gv-motion-reduced-duration: 1ms;
+
+  /* Layering */
+  --gv-layer-base: 0;
+  --gv-layer-sticky: 100;
+  --gv-layer-dropdown: 200;
+  --gv-layer-overlay: 400;
+  --gv-layer-modal: 500;
+  --gv-layer-toast: 600;
+  --gv-layer-critical-lock: 900;
+
+  /* Proposed breakpoints (metadata mirrors these for layout tooling) */
+  --gv-breakpoint-small-mobile: 22.5rem;
+  --gv-breakpoint-mobile: 40rem;
+  --gv-breakpoint-tablet: 48rem;
+  --gv-breakpoint-desktop: 64rem;
+  --gv-breakpoint-wide: 90rem;
+  --gv-breakpoint-presentation: 120rem;
+
+  /* Component-facing and density roles */
+  --gv-control-height-comfortable: 2.75rem;
+  --gv-control-height-compact: 2.25rem;
+  --gv-control-height-presentation: 3.5rem;
+  --gv-touch-target-minimum: 2.75rem;
+  --gv-density-comfortable-gap: var(--gv-space-4);
+  --gv-density-compact-gap: var(--gv-space-2);
+  --gv-density-presentation-gap: var(--gv-space-6);
+  --gv-page-gutter: clamp(var(--gv-space-4), 4vw, var(--gv-space-8));
+  --gv-content-width-reading: 46rem;
+  --gv-content-width-clinical: 90rem;
+
+  /* Application-surface roles */
+  --gv-dashboard-background: var(--gv-color-background);
+  --gv-dashboard-surface: var(--gv-color-surface);
+  --gv-scan-background: var(--gv-primitive-navy-900);
+  --gv-scan-surface: var(--gv-primitive-neutral-0);
+  --gv-scan-overlay: rgb(17 26 33 / 72%);
+  --gv-scan-connectivity: var(--gv-color-information-text);
+  --gv-public-background: var(--gv-color-background);
+  --gv-report-background: var(--gv-primitive-neutral-0);
+  --gv-report-text: var(--gv-color-text-primary);
+  --gv-report-rule: var(--gv-color-border-strong);
+
+  /* Patient-safe presentation roles */
+  --gv-presentation-background: var(--gv-primitive-navy-900);
+  --gv-presentation-surface: #1d3a4b;
+  --gv-presentation-text: #f8fafc;
+  --gv-presentation-text-muted: #d6e1e8;
+  --gv-presentation-accent: var(--gv-brand-presentation-accent);
+  --gv-presentation-expired-background: var(--gv-primitive-neutral-800);
+  --gv-presentation-expired-text: var(--gv-primitive-neutral-0);
+  --gv-presentation-title-size: var(--gv-font-size-display);
+  --gv-presentation-body-size: var(--gv-font-size-presentation);
+}

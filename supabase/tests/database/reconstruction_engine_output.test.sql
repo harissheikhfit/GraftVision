@@ -1,0 +1,32 @@
+begin;
+select plan(26);
+
+select has_table('public', 'reconstruction_artifact', 'RECON-003 stores bounded artifact metadata');
+select has_table('public', 'reconstruction_output_manifest', 'RECON-003 stores immutable output manifests');
+select has_table('public', 'reconstruction_output_event', 'RECON-003 stores append-only output events');
+select has_table('public', 'reconstruction_output_idempotency', 'RECON-003 preserves replay safety');
+select has_function('graftvision_private', 'begin_reconstruction_execution', array['uuid','uuid','integer','integer','uuid'], 'leased execution begin exists');
+select has_function('graftvision_private', 'record_reconstruction_artifact', array['uuid','uuid','integer','integer','uuid','text','integer','uuid'], 'artifact operation exists');
+select has_function('graftvision_private', 'finalize_reconstruction_output', array['uuid','uuid','integer','integer','integer','integer','integer','numeric[]','uuid'], 'output finalization exists');
+select has_function('graftvision_private', 'read_reconstruction_output_status', array['uuid','uuid','uuid'], 'safe Doctor status exists');
+select is((select relrowsecurity and relforcerowsecurity from pg_class where oid = 'public.reconstruction_artifact'::regclass), true, 'artifact metadata has forced RLS');
+select is((select relrowsecurity and relforcerowsecurity from pg_class where oid = 'public.reconstruction_output_manifest'::regclass), true, 'output manifest has forced RLS');
+select is((select relrowsecurity and relforcerowsecurity from pg_class where oid = 'public.reconstruction_output_event'::regclass), true, 'output events have forced RLS');
+select is((select relrowsecurity and relforcerowsecurity from pg_class where oid = 'public.reconstruction_output_idempotency'::regclass), true, 'output idempotency has forced RLS');
+select is_empty('select * from information_schema.role_table_grants where table_schema=''public'' and table_name=''reconstruction_artifact'' and grantee in (''anon'',''authenticated'')', 'normal roles cannot mutate artifacts');
+select is_empty('select * from information_schema.role_table_grants where table_schema=''public'' and table_name=''reconstruction_output_manifest'' and grantee in (''anon'',''authenticated'')', 'normal roles cannot mutate manifests');
+select col_has_check('public', 'reconstruction_artifact', 'artifact_type', 'artifact type is bounded');
+select col_has_check('public', 'reconstruction_artifact', 'mime_type', 'artifact MIME type is bounded');
+select col_has_check('public', 'reconstruction_artifact', 'byte_size', 'artifact byte size is bounded');
+select col_has_check('public', 'reconstruction_output_manifest', 'engine_name', 'engine is explicitly synthetic');
+select col_has_check('public', 'reconstruction_output_manifest', 'coordinate_system_code', 'coordinate system is bounded');
+select col_has_check('public', 'reconstruction_output_manifest', 'unit_code', 'unit is bounded');
+select col_has_check('public', 'reconstruction_output_manifest', 'validation_status', 'validation state is bounded');
+select is((select count(*) from pg_trigger where tgrelid='public.reconstruction_artifact'::regclass and not tgisinternal), 1::bigint, 'artifact direct mutations are controlled');
+select is((select count(*) from pg_trigger where tgrelid='public.reconstruction_output_event'::regclass and not tgisinternal), 1::bigint, 'output events are immutable controlled rows');
+select ok(graftvision_private.is_valid_audit_action('reconstruction.execution_started'), 'execution-start audit action is allowlisted');
+select ok(graftvision_private.is_valid_audit_action('reconstruction.artifact_recorded'), 'artifact audit action is allowlisted');
+select ok(graftvision_private.is_valid_audit_action('reconstruction.output_manifest_created'), 'output manifest audit action is allowlisted');
+
+select * from finish();
+rollback;

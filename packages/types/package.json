@@ -1,0 +1,25 @@
+{
+  "name": "@graftvision/types",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Foundation for future shared GraftVision TypeScript types.",
+  "sideEffects": false,
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "build": "rimraf dist && tsc --project tsconfig.build.json",
+    "clean": "rimraf .turbo coverage dist tsconfig.tsbuildinfo",
+    "lint": "eslint . --config ../../eslint.config.mjs --max-warnings 0",
+    "test": "vitest run --config ../../vitest.config.ts --root .",
+    "test:coverage": "vitest run --config ../../vitest.config.ts --root . --coverage",
+    "test:watch": "vitest --config ../../vitest.config.ts --root .",
+    "typecheck": "tsc --project tsconfig.json --noEmit"
+  }
+}

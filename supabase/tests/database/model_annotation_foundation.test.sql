@@ -1,0 +1,17 @@
+begin;
+select plan(14);
+select has_table('public', 'model_annotation_package', 'annotation package root exists');
+select has_table('public', 'model_annotation_landmark_version', 'immutable landmark versions exist');
+select has_table('public', 'model_annotation_curve_version', 'immutable curve versions exist');
+select has_table('public', 'model_annotation_region_version', 'immutable region versions exist');
+select has_table('public', 'model_annotation_event', 'immutable annotation events exist');
+select has_table('public', 'model_annotation_idempotency', 'annotation idempotency records exist');
+select col_not_null('public', 'model_annotation_package', 'model_package_id', 'root binds model package');
+select col_not_null('public', 'model_annotation_package', 'geometry_revision', 'root binds geometry revision');
+select col_not_null('public', 'model_annotation_landmark_version', 'normalized_coordinate', 'landmark coordinates are required');
+select col_not_null('public', 'model_annotation_curve_version', 'control_points', 'curve points are required');
+select col_not_null('public', 'model_annotation_region_version', 'boundary_points', 'region boundaries are required');
+select policies_are('public', 'model_annotation_package', array[]::name[], 'ordinary package access is denied');
+select policies_are('public', 'model_annotation_landmark_version', array[]::name[], 'ordinary landmark access is denied');
+select throws_ok($$insert into public.model_annotation_package (clinic_id, patient_id, consultation_id, model_package_id, reconstruction_output_manifest_id, model_artifact_id, geometry_revision, created_by) values (gen_random_uuid(), gen_random_uuid(), gen_random_uuid(), gen_random_uuid(), gen_random_uuid(), gen_random_uuid(), 1, gen_random_uuid())$$, null, null, 'direct annotation mutation is denied');
+select * from finish(); rollback;

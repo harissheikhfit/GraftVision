@@ -1,0 +1,7 @@
+@import "@graftvision/ui/styles.css";
+
+body {
+  display: block;
+  padding: 0;
+  background: var(--gv-scan-background);
+}

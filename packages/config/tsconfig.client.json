@@ -1,0 +1,7 @@
+{
+  "extends": "../../tsconfig.package.json",
+  "compilerOptions": {
+    "rootDir": "src"
+  },
+  "include": ["src/index.ts", "src/env/client.ts", "src/env/validation.ts"]
+}

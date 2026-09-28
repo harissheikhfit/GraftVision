@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Turborepo
+.turbo/
+
+# Application builds
+.next/
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# Test and quality artifacts
+coverage/
+.eslintcache
+.vitest/
+playwright-report/
+test-results/
+
+# Environment files and secrets
+.env
+.env.*
+!.env.example
+
+# Deployment providers
+.vercel/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editors and operating systems
+.DS_Store
+.AppleDouble
+.LSOverride
+.idea/
+.vscode/
+*.swp
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+.graftvision-tmp/
+scratch/

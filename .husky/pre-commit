@@ -1,0 +1,2 @@
+corepack pnpm exec lint-staged
+corepack pnpm verify:boundaries

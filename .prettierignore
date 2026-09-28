@@ -1,0 +1,16 @@
+node_modules
+.next
+.turbo
+.husky/_
+coverage
+dist
+build
+out
+docs
+tmp
+temp
+**/next-env.d.ts
+*.generated.*
+*.tsbuildinfo
+pnpm-lock.yaml
+.venv-onnx-generator

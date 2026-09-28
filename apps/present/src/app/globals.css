@@ -1,0 +1,18 @@
+@import "@graftvision/ui/styles.css";
+
+body {
+  display: block;
+  padding: 0;
+  background: var(--gv-presentation-background);
+  color: var(--gv-presentation-text);
+}
+
+.shell-notice {
+  border-color: var(--gv-presentation-text-muted);
+  background: var(--gv-presentation-surface);
+  color: var(--gv-presentation-text);
+}
+
+.shell-notice p {
+  color: var(--gv-presentation-text-muted);
+}

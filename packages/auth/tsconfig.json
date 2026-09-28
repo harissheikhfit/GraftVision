@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.server.json",
+  "compilerOptions": {
+    "lib": ["DOM", "DOM.Iterable", "ES2024"],
+    "rootDir": "src",
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*.ts"]
+}

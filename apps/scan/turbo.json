@@ -1,0 +1,17 @@
+{
+  "$schema": "https://turborepo.dev/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "env": ["NODE_ENV"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!README.md",
+        "!src/**/*.{test,spec}.{ts,tsx}",
+        "$TURBO_ROOT$/tsconfig.base.json",
+        "$TURBO_ROOT$/tsconfig.next.json"
+      ],
+      "outputs": [".next/**", "!.next/cache/**"]
+    }
+  }
+}

@@ -1,0 +1,11 @@
+begin;
+select plan(8);
+select has_table('public','scan_capture_quality_review','quality review root exists');
+select has_table('public','scan_capture_quality_result','immutable quality results exist');
+select has_table('public','scan_capture_quality_event','immutable quality events exist');
+select has_function('graftvision_private','read_scan_package_readiness',array['uuid'],'readiness is database authoritative');
+select col_not_null('public','scan_capture_quality_result','asset_id','result binds asset');
+select col_not_null('public','scan_capture_quality_result','validator_version','result binds validator');
+select policies_are('public','scan_capture_quality_result',array[]::name[],'ordinary reads are denied');
+select throws_ok($$insert into public.scan_capture_quality_review (clinic_id,patient_id,consultation_id,scan_session_id) values(gen_random_uuid(),gen_random_uuid(),gen_random_uuid(),gen_random_uuid())$$,null,null,'direct review mutation is denied');
+select * from finish(); rollback;

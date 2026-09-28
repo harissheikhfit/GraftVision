@@ -1,0 +1,37 @@
+begin;
+select plan(31);
+
+select has_table('public', 'reconstruction_input_manifest', 'immutable reconstruction manifest exists');
+select has_table('public', 'reconstruction_job', 'controlled job root exists');
+select has_table('public', 'reconstruction_job_event', 'append-only job events exist');
+select has_table('public', 'reconstruction_job_idempotency', 'job idempotency exists');
+select has_column('public', 'reconstruction_input_manifest', 'asset_ids', 'manifest binds seven assets');
+select has_column('public', 'reconstruction_input_manifest', 'quality_result_ids', 'manifest binds quality evidence');
+select has_column('public', 'reconstruction_input_manifest', 'validator_versions', 'manifest binds validator versions');
+select has_column('public', 'reconstruction_job', 'worker_lease_owner', 'job has worker lease owner');
+select has_column('public', 'reconstruction_job', 'lease_expires_at', 'job has lease expiry');
+select has_column('public', 'reconstruction_job', 'progress_stage', 'job has bounded progress stage');
+select has_column('public', 'reconstruction_job', 'failure_code', 'job has bounded failure code');
+select policies_are('public', 'reconstruction_input_manifest', array[]::name[], 'ordinary manifest reads are denied');
+select policies_are('public', 'reconstruction_job', array[]::name[], 'ordinary job reads are denied');
+select policies_are('public', 'reconstruction_job_event', array[]::name[], 'ordinary event reads are denied');
+select has_function('graftvision_private', 'create_reconstruction_job', array['uuid','uuid','uuid','integer','uuid'], 'job creation is controlled');
+select has_function('graftvision_private', 'claim_reconstruction_job', array['uuid','uuid','integer'], 'job claim is controlled');
+select has_function('graftvision_private', 'renew_reconstruction_job_lease', array['uuid','uuid','integer'], 'lease renewal is controlled');
+select has_function('graftvision_private', 'update_reconstruction_job_progress', array['uuid','uuid','integer','integer','text'], 'progress is controlled');
+select has_function('graftvision_private', 'complete_reconstruction_job', array['uuid','uuid','integer'], 'success is controlled');
+select has_function('graftvision_private', 'fail_reconstruction_job', array['uuid','uuid','integer','text'], 'failure is controlled');
+select has_function('graftvision_private', 'retry_reconstruction_job', array['uuid','uuid','uuid','integer','uuid'], 'retry is controlled');
+select has_function('graftvision_private', 'cancel_reconstruction_job', array['uuid','uuid','uuid','integer','uuid'], 'cancellation is controlled');
+select has_function('graftvision_private', 'read_reconstruction_job_status', array['uuid','uuid','uuid'], 'safe job status is controlled');
+select has_function('graftvision_private', 'read_reconstruction_manifest_summary', array['uuid','uuid','uuid'], 'safe manifest summary is controlled');
+select ok(position('read_scan_package_readiness' in pg_get_functiondef('graftvision_private.create_reconstruction_job(uuid,uuid,uuid,integer,uuid)'::regprocedure)) > 0, 'creation requires current trusted readiness');
+select ok(position('is_assigned_verified_doctor' in pg_get_functiondef('graftvision_private.create_reconstruction_job(uuid,uuid,uuid,integer,uuid)'::regprocedure)) > 0, 'creation requires assigned verified Doctor');
+select ok(position('for update' in pg_get_functiondef('graftvision_private.claim_reconstruction_job(uuid,uuid,integer)'::regprocedure)) > 0, 'claim locks the root');
+select ok(position('p_progress_percentage<j.progress_percentage' in pg_get_functiondef('graftvision_private.update_reconstruction_job_progress(uuid,uuid,integer,integer,text)'::regprocedure)) > 0, 'progress regressions are denied');
+select ok(position('worker_lease_owner<>p_worker_id' in pg_get_functiondef('graftvision_private.complete_reconstruction_job(uuid,uuid,integer)'::regprocedure)) > 0, 'only claimant can complete');
+select ok(position('object_key' in pg_get_functiondef('graftvision_private.read_reconstruction_manifest_summary(uuid,uuid,uuid)'::regprocedure)) = 0, 'safe manifest omits storage paths');
+select ok(position('worker_lease_owner' in pg_get_functiondef('graftvision_private.read_reconstruction_job_status(uuid,uuid,uuid)'::regprocedure)) = 0, 'safe status omits worker identity');
+
+select * from finish();
+rollback;

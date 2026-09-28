@@ -1,0 +1,17 @@
+begin;
+select plan(13);
+select has_table('public','reconstruction_worker_storage_grant','worker storage authorization grants are private and bounded');
+select has_function('graftvision_private','read_worker_reconstruction_context',array['uuid','uuid','integer'],'worker context requires a lease');
+select has_function('graftvision_private','authorize_prepared_asset_access',array['uuid','uuid','integer','uuid'],'prepared asset authorization exists');
+select has_function('graftvision_private','authorize_reconstruction_artifact_upload',array['uuid','uuid','integer','text','text'],'artifact upload authorization exists');
+select has_function('graftvision_private','read_worker_cancellation_state',array['uuid','uuid','integer'],'cancellation state exists');
+select has_function('graftvision_private','record_worker_reconstruction_artifact',array['uuid','uuid','integer','integer','uuid','uuid','text','text','text','integer','text','text','text','text','text','uuid'],'artifact persistence binds its storage grant');
+select is((select relrowsecurity and relforcerowsecurity from pg_class where oid='public.reconstruction_worker_storage_grant'::regclass),true,'storage grants have forced RLS');
+select is_empty('select * from information_schema.role_table_grants where table_schema=''public'' and table_name=''reconstruction_worker_storage_grant'' and grantee in (''anon'',''authenticated'')','browser roles cannot access worker grants');
+select is((select count(*) from pg_trigger where tgrelid='public.reconstruction_worker_storage_grant'::regclass and not tgisinternal),1::bigint,'direct storage-grant mutation is blocked');
+select col_has_check('public','reconstruction_worker_storage_grant','operation','grant operation is bounded');
+select col_has_check('public','reconstruction_worker_storage_grant','artifact_type','artifact type is bounded');
+select col_has_check('public','reconstruction_worker_storage_grant','mime_type','MIME type is bounded');
+select col_not_null('public','reconstruction_worker_storage_grant','expires_at','grant expiry is required');
+select * from finish();
+rollback;

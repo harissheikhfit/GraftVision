@@ -1,0 +1,90 @@
+{
+  "$schema": "https://turborepo.dev/schema.json",
+  "globalDependencies": ["pnpm-workspace.yaml"],
+  "tasks": {
+    "build": {
+      "description": "Build applications and emit declarations for shared packages.",
+      "dependsOn": ["^build"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!README.md",
+        "!src/**/*.{test,spec}.{ts,tsx}",
+        "$TURBO_ROOT$/tsconfig.base.json",
+        "$TURBO_ROOT$/tsconfig.package.json",
+        "$TURBO_ROOT$/tsconfig.server.json"
+      ],
+      "outputs": ["dist/**"]
+    },
+    "clean": {
+      "description": "Remove explicit generated outputs for one workspace.",
+      "cache": false
+    },
+    "dev": {
+      "description": "Run long-lived application development servers.",
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {
+      "description": "Lint one workspace without generating files.",
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!README.md",
+        "$TURBO_ROOT$/eslint.config.mjs",
+        "$TURBO_ROOT$/tsconfig.base.json",
+        "$TURBO_ROOT$/tsconfig.next.json",
+        "$TURBO_ROOT$/tsconfig.package.json",
+        "$TURBO_ROOT$/tsconfig.server.json"
+      ],
+      "outputs": []
+    },
+    "test": {
+      "description": "Run deterministic unit tests without coverage or prerequisite builds.",
+      "env": ["CI", "NODE_ENV"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!README.md",
+        "$TURBO_ROOT$/testing/**",
+        "$TURBO_ROOT$/tsconfig.base.json",
+        "$TURBO_ROOT$/tsconfig.next.json",
+        "$TURBO_ROOT$/tsconfig.package.json",
+        "$TURBO_ROOT$/tsconfig.server.json",
+        "$TURBO_ROOT$/vitest.config.ts"
+      ],
+      "outputs": []
+    },
+    "test:coverage": {
+      "description": "Run unit tests and cache each workspace's complete coverage output.",
+      "env": ["CI", "NODE_ENV"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!README.md",
+        "$TURBO_ROOT$/testing/**",
+        "$TURBO_ROOT$/tsconfig.base.json",
+        "$TURBO_ROOT$/tsconfig.next.json",
+        "$TURBO_ROOT$/tsconfig.package.json",
+        "$TURBO_ROOT$/tsconfig.server.json",
+        "$TURBO_ROOT$/vitest.config.ts"
+      ],
+      "outputs": ["coverage/**"]
+    },
+    "test:watch": {
+      "description": "Run interactive, long-lived Vitest watch processes.",
+      "cache": false,
+      "interactive": true,
+      "persistent": true
+    },
+    "typecheck": {
+      "description": "Typecheck dependencies before their consumers without emitting build output.",
+      "dependsOn": ["^typecheck"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!README.md",
+        "$TURBO_ROOT$/tsconfig.base.json",
+        "$TURBO_ROOT$/tsconfig.next.json",
+        "$TURBO_ROOT$/tsconfig.package.json",
+        "$TURBO_ROOT$/tsconfig.server.json"
+      ],
+      "outputs": []
+    }
+  }
+}

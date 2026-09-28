@@ -1,0 +1,29 @@
+{
+  "name": "@graftvision/scan",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Minimal development shell for the future GraftVision capture application.",
+  "scripts": {
+    "build": "next build",
+    "clean": "rimraf .next .turbo coverage tsconfig.tsbuildinfo",
+    "dev": "next dev --port 3001",
+    "lint": "eslint . --config ../../eslint.config.mjs --max-warnings 0",
+    "start": "next start --port 3001",
+    "test": "vitest run --config ../../vitest.config.ts --root .",
+    "test:coverage": "vitest run --config ../../vitest.config.ts --root . --coverage",
+    "test:watch": "vitest --config ../../vitest.config.ts --root .",
+    "typecheck": "next typegen && tsc --project tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@graftvision/ui": "workspace:*",
+    "next": "16.2.11",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@graftvision/types": "workspace:*",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3"
+  }
+}

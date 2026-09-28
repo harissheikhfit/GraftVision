@@ -1,0 +1,14 @@
+begin;
+select plan(11);
+select has_table('public','model_annotation_landmark_current','landmark current pointers exist');
+select has_table('public','model_annotation_curve_current','curve current pointers exist');
+select has_table('public','model_annotation_region_current','region current pointers exist');
+select has_pk('public','model_annotation_landmark_current','package and code form the unique landmark pointer key');
+select col_not_null('public','model_annotation_curve_current','current_version_id','curve pointer binds current version');
+select col_not_null('public','model_annotation_region_current','geometry_revision','region pointer binds geometry revision');
+select col_has_check('public','model_annotation_landmark_current','revision','pointer revision is positive');
+select col_has_check('public','model_annotation_curve_current','curve_code','curve catalogue remains bounded');
+select is((select relrowsecurity and relforcerowsecurity from pg_class where oid='public.model_annotation_region_current'::regclass),true,'region pointers use forced RLS');
+select policies_are('public','model_annotation_landmark_current',array[]::name[],'ordinary landmark pointer access is denied');
+select throws_ok($$insert into public.model_annotation_landmark_current(annotation_package_id,clinic_id,patient_id,consultation_id,model_package_id,reconstruction_output_manifest_id,model_artifact_id,geometry_revision,normalization_version,landmark_code,current_version_id,updated_by) values(gen_random_uuid(),gen_random_uuid(),gen_random_uuid(),gen_random_uuid(),gen_random_uuid(),gen_random_uuid(),gen_random_uuid(),1,'graftvision-model-normalization-v1','glabella_reference',gen_random_uuid(),gen_random_uuid())$$,null,null,'direct current-pointer mutation is denied');
+select * from finish(); rollback;

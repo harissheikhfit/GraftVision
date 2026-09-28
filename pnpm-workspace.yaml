@@ -1,0 +1,10 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+autoInstallPeers: false
+overrides:
+  happy-dom: "-"
+allowBuilds:
+  onnxruntime-node: false
+  sharp: true
+  unrs-resolver: true

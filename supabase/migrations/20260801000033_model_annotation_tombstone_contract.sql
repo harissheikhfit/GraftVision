@@ -1,0 +1,20 @@
+-- MODEL-001B2b2e1: bounded tombstone lifecycle for immutable annotation versions.
+alter table public.model_annotation_landmark_version add column lifecycle_state text not null default 'active' check (lifecycle_state in ('active','tombstone'));
+alter table public.model_annotation_curve_version add column lifecycle_state text not null default 'active' check (lifecycle_state in ('active','tombstone'));
+alter table public.model_annotation_region_version add column lifecycle_state text not null default 'active' check (lifecycle_state in ('active','tombstone'));
+
+create function graftvision_private.enforce_model_annotation_tombstone()
+returns trigger language plpgsql security definer set search_path='' as $$ declare previous record; begin
+  if new.lifecycle_state='active' then return new; end if;
+  if tg_table_name='model_annotation_landmark_version' then select * into strict previous from public.model_annotation_landmark_version where id=new.supersedes_landmark_id; if previous.lifecycle_state<>'active' or previous.annotation_package_id<>new.annotation_package_id or previous.landmark_code<>new.landmark_code or previous.model_package_id<>new.model_package_id or previous.geometry_revision<>new.geometry_revision or previous.normalized_coordinate<>new.normalized_coordinate or coalesce(previous.surface_reference,'')<>coalesce(new.surface_reference,'') then raise exception using errcode='23514',message='MODEL_ANNOTATION_TOMBSTONE_INVALID'; end if;
+  elsif tg_table_name='model_annotation_curve_version' then select * into strict previous from public.model_annotation_curve_version where id=new.supersedes_curve_id; if previous.lifecycle_state<>'active' or previous.annotation_package_id<>new.annotation_package_id or previous.curve_code<>new.curve_code or previous.model_package_id<>new.model_package_id or previous.geometry_revision<>new.geometry_revision or previous.control_points<>new.control_points or previous.closed<>new.closed or previous.smoothing_mode<>new.smoothing_mode then raise exception using errcode='23514',message='MODEL_ANNOTATION_TOMBSTONE_INVALID'; end if;
+  else select * into strict previous from public.model_annotation_region_version where id=new.supersedes_region_id; if previous.lifecycle_state<>'active' or previous.annotation_package_id<>new.annotation_package_id or previous.region_code<>new.region_code or previous.model_package_id<>new.model_package_id or previous.geometry_revision<>new.geometry_revision or previous.boundary_points<>new.boundary_points or previous.closed<>new.closed then raise exception using errcode='23514',message='MODEL_ANNOTATION_TOMBSTONE_INVALID'; end if; end if; return new; end; $$;
+create trigger model_annotation_landmark_tombstone_contract before insert on public.model_annotation_landmark_version for each row execute function graftvision_private.enforce_model_annotation_tombstone();
+create trigger model_annotation_curve_tombstone_contract before insert on public.model_annotation_curve_version for each row execute function graftvision_private.enforce_model_annotation_tombstone();
+create trigger model_annotation_region_tombstone_contract before insert on public.model_annotation_region_version for each row execute function graftvision_private.enforce_model_annotation_tombstone();
+
+create view graftvision_private.current_model_annotation_lifecycle as
+select 'landmark'::text annotation_kind,p.annotation_package_id,p.landmark_code annotation_code,p.current_version_id,v.lifecycle_state from public.model_annotation_landmark_current p join public.model_annotation_landmark_version v on v.id=p.current_version_id
+union all select 'curve',p.annotation_package_id,p.curve_code,p.current_version_id,v.lifecycle_state from public.model_annotation_curve_current p join public.model_annotation_curve_version v on v.id=p.current_version_id
+union all select 'region',p.annotation_package_id,p.region_code,p.current_version_id,v.lifecycle_state from public.model_annotation_region_current p join public.model_annotation_region_version v on v.id=p.current_version_id;
+revoke all on table graftvision_private.current_model_annotation_lifecycle from public,anon,authenticated;
